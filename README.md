@@ -1,90 +1,162 @@
-# FURY ULTIMATE - Universal AI-to-System Bridge 🚀
+# R.alsamee — FURY Local Task Manager
 
-**FURY ULTIMATE** هو جسر برمجي متطور وآمن يربط بين تطبيقات الذكاء الاصطناعي (مثل ChatGPT, Claude, Manus) وبين بيئة نظامك المحلية (**Termux** أو **Kali Linux**). يتيح لك هذا النظام التحكم الكامل في جهازك وتنفيذ الأوامر البرمجية والأمنية عبر واجهة دردشة بسيطة وبأمان تام وددون الحاجة لإعدادات خادم معقدة.
+أداة تعليمية لإدارة **مقترحات المهام المحلية** من بيئات Termux وKali Linux. تكتشف الأداة البيئة التي تعمل فيها، تنشئ معرّفاً خاصاً للقناة، وتعرض المهام الواردة للمستخدم قبل تنفيذها. لا تنفّذ الأداة أي مهمة واردة تلقائياً؛ يجب أن يوافق المستخدم محلياً على كل مهمة.
 
----
+> **تنبيه أمني:** قناة `ntfy.sh` العامة ليست نظام مصادقة أو سرية بحد ذاتها. استخدم معرّفاً عشوائياً لا يتضمن اسمك أو بريدك، ولا ترسل كلمات مرور أو مفاتيح أو بيانات شخصية عبر القناة. راجع كل مهمة قبل الموافقة عليها، ولا تمنح الأداة صلاحيات Root إلا عند الضرورة القصوى.
 
-## الميزات الرئيسية 🌟
-- **دعم متعدد الأنظمة (Multi-Platform):** يكتشف السكريبت تلقائياً ما إذا كنت تعمل على بيئة **Termux (Android)** أو توزيعة **Kali Linux (PC)**.
-- **خصوصية كاملة وعزل كامل (Full Privacy & Isolation):** يعتمد على معرفات فريدة (Unique IDs / Tags) يختارها المستخدم بنفسه أو يتم توليدها بشكل عشوائي آمن، لضمان عدم تداخل البيانات بين المستخدمين.
-- **بدون فتح منافذ (Zero-Config / No Port Forwarding):** لا يتطلب إعدادات شبكية معقدة أو استخدام أدوات نفق (Tunneling) مزعجة، بل يعتمد على قنوات تواصل سحابية خفيفة وآمنة (`ntfy.sh`).
-- **واجهة تعليمية جاهزة:** يولد تلقائياً دليلاً تشغيلياً واضحاً ومباشراً بصيغة احترافية لكي يفهَم الذكاء الاصطناعي طبيعة البروتوكول وينفذ الأوامر بدقة.
+## المزايا
 
----
+| الميزة | الوصف |
+|---|---|
+| اكتشاف البيئة | يميّز بين Termux على Android وKali Linux، مع دعم Linux العام كخيار احتياطي. |
+| معرّف مستقل | يطلب معرّفاً من المستخدم أو يولّد وسمًا عشوائياً لتقليل تداخل القنوات. |
+| موافقة محلية | يعرض كل مهمة واردة وينتظر قرار المستخدم قبل التنفيذ. |
+| واجهة بسيطة | يطبع المقترح والنتيجة في الطرفية المحلية. |
+| لا توجد بيانات مضمنة | لا يحتوي المشروع على معرف جهاز أو كلمة مرور أو مفتاح خاص مسبقاً. |
 
-## كيف يعمل النظام؟ ⚙️
-1. **التهيئة:** عند تشغيل السكريبت، يقوم بالتعرف على نظام التشغيل ويطلب منك إدخال **معرف خاص (Unique ID)** أو توليد معرف آمن.
-2. **البروتوكول:** يعرض لك السكريبت رسالة تعليمات تقنية تحتوي على عناوين API مخصصة لمعرفك.
-3. **المزامنة العكسية (Reverse Polling):**
-   - يقوم الذكاء الاصطناعي بإرسال الأوامر كطلب `POST` إلى القناة المخصصة.
-   - يقوم السكريبت المحلي بسحب الأمر، تنفيذه محلياً عبر صدفة النظام (`subprocess`), وإرسال النتيجة كطلب `POST` إلى قناة الردود (`-res`).
+## آلية العمل
 
----
+عند بدء `ramy.py`، يكتشف السكربت النظام ويطلب معرّفاً خاصاً. بعد ذلك يراقب قناة الرسائل الخاصة بالمعرّف عبر HTTPS. عندما تصل رسالة، يعرضها كمقترح مهمة ويسأل المستخدم: `Do you want to execute this task locally? (y/N)`. عند اختيار `y` فقط، تُنفّذ المهمة في البيئة المحلية وتُرسل النتيجة إلى قناة الردود. عند أي إجابة أخرى تُرفض المهمة.
 
-## دليل التثبيت والاستخدام 🛠️
+هذه الآلية **ليست اتصالاً مباشراً أو تفويضاً للذكاء الاصطناعي**، ولا تعني أن الطرف البعيد موثوق. المستخدم المحلي هو صاحب القرار النهائي، ويجب عليه التحقق من كل أمر قبل الموافقة.
 
-### 1. المتطلبات الأساسية
-تأكد من تثبيت لغة **Python 3** ومكتبة **requests**:
+## المتطلبات
+
+يتطلب المشروع Python 3 ومكتبة `requests`.
+
+### Termux
+
+نفّذ الأوامر التالية داخل Termux:
+
 ```bash
-# على Termux
-pkg update && pkg install python -y
-pip install requests
-
-# على Kali Linux / Debian / Ubuntu
-sudo apt update && sudo apt install python3 python3-pip -y
-pip3 install requests
+pkg update -y
+pkg upgrade -y
+pkg install python -y
+python -m pip install --upgrade pip
+python -m pip install requests
 ```
 
-### 2. التشغيل
-قم بتحميل السكريبت `FURY_ULTIMATE.py` ثم شغله:
+إذا كان الملف موجوداً في مجلد التنزيلات، انسخه إلى مجلد Termux ثم شغّله:
+
 ```bash
-python3 FURY_ULTIMATE.py
+termux-setup-storage
+cp ~/storage/downloads/ramy.py ~/
+python ramy.py
 ```
 
-### 3. الربط مع الذكاء الاصطناعي
-- أدخل معرفك الخاص عندما يطلبه السكريبت.
-- انسخ النص (الدليل التقني) الذي سيظهر لك في الشاشة.
-- الصق النص في محادثتك مع الذكاء الاصطناعي (مثل ChatGPT أو Claude أو Manus).
-- ابدأ بإعطاء الأوامر واستلم النتائج فوراً!
+وإذا نزّلت المشروع من GitHub مباشرة:
 
----
-
-## إخلاء مسؤولية ⚖️
-هذه الأداة مخصصة حصرياً للأغراض التعليمية، وتطوير السكربتات الشخصية، واختبار الأمان المشروع في بيئاتك المحلية. المطور لا يتحمل أي مسؤولية قانونية عن أي استخدام غير قانوني أو ضار لهذه الأداة.
-
----
-
-# FURY ULTIMATE - Universal AI-to-System Bridge 🚀
-
-**FURY ULTIMATE** is an advanced, secure bridge connecting AI assistants (ChatGPT, Claude, Manus) to your local system environment (**Termux** or **Kali Linux**). It allows you to seamlessly control your local device and execute authorized shell commands through a chat interface without complex server configurations.
-
-## Key Features 🌟
-- **Multi-Platform Support:** Automatically detects Termux (Android) or Kali Linux (PC).
-- **Strict Privacy & Isolation:** Utilizes custom user-defined Unique IDs or secure random tags to completely isolate data channels.
-- **Zero-Config:** No port forwarding, VPNs, or complex tunneling required.
-- **AI-Ready Protocol:** Automatically generates clear, structured instructions for AI models.
-
-## Installation & Usage 🛠️
-
-### 1. Prerequisites
-Ensure Python 3 and `requests` are installed:
 ```bash
-pip install requests
+pkg install git -y
+git clone https://github.com/Ramy-alsamee/R.alsamee.git
+cd R.alsamee
+python ramy.py
 ```
 
-### 2. Running the Tool
+### Kali Linux أو Debian أو Ubuntu
+
+نفّذ الأوامر التالية:
+
 ```bash
-python3 FURY_ULTIMATE.py
+sudo apt update
+sudo apt install -y python3 python3-pip git
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install requests
 ```
 
-### 3. Connection Steps
-- Enter your unique identifier when prompted.
-- Copy the generated technical protocol text.
-- Paste it into your AI assistant session.
-- Begin executing commands remotely and securely!
+بعد ذلك نزّل المشروع وشغّله:
 
-## Disclaimer ⚖️
-This tool is intended for educational purposes, personal workflow automation, and authorized security testing only. The developer assumes no liability for misuse.
+```bash
+git clone https://github.com/Ramy-alsamee/R.alsamee.git
+cd R.alsamee
+python3 ramy.py
+```
 
-## License
-MIT License
+إذا كنت تستخدم البيئة الافتراضية، فعّلها أولاً من داخل مجلد المشروع:
+
+```bash
+source .venv/bin/activate
+python ramy.py
+```
+
+## الاستخدام
+
+بعد تشغيل السكربت، أدخل معرّفاً عشوائياً أو اضغط Enter لتوليد معرّف عشوائي. انسخ بيانات البروتوكول التي تظهر لك فقط إذا كنت تفهم مخاطر القنوات العامة. لا تشارك معرّفك مع أشخاص غير موثوقين، لأن أي شخص يعرف المعرّف قد يحاول نشر رسالة في القناة. عند ظهور مهمة، اقرأها كاملة؛ اكتب `y` فقط إذا كنت متأكداً من الأمر وهدفه، واضغط Enter لرفضها في أي حالة أخرى.
+
+لإيقاف السكربت، استخدم:
+
+```text
+Ctrl+C
+```
+
+## ما الذي لا يفعله المشروع؟
+
+لا يقوم المشروع بتجاوز كلمات المرور، أو كسر تشفير Wi‑Fi، أو استغلال ثغرات، أو تثبيت برمجيات خبيثة، أو منح صلاحيات Root تلقائياً. كما لا ينبغي استخدامه لإدارة أجهزة أشخاص آخرين دون موافقة صريحة منهم.
+
+## استكشاف الأخطاء
+
+إذا ظهر الخطأ `ModuleNotFoundError: No module named 'requests'`، أعد تثبيت المكتبة داخل البيئة نفسها:
+
+```bash
+python3 -m pip install requests
+```
+
+إذا لم تصل الرسائل، تحقق من اتصال الإنترنت واسم القناة، وتأكد من أن السكربت لا يزال يعمل. تذكّر أن القنوات العامة قد تتعرض للتأخير أو الحجب أو الرسائل القديمة، لذلك لا تعتمد عليها لنقل أسرار أو أوامر حساسة.
+
+إذا رفض Termux الوصول إلى مجلد التنزيلات، نفّذ `termux-setup-storage` مرة واحدة ووافق على الإذن. إذا رفض Kali إنشاء بيئة افتراضية، تحقق من تثبيت حزمة `python3-venv`:
+
+```bash
+sudo apt install -y python3-venv
+```
+
+## الترخيص
+
+هذا المشروع مرخّص بموجب MIT License. وهو مخصص للتعليم، وأتمتة المهام الشخصية، والاختبار المصرّح به فقط. يتحمل المستخدم مسؤولية الأوامر التي يوافق على تنفيذها والبيئة التي يشغّل فيها الأداة.
+
+## English summary
+
+`ramy.py` is an educational local task manager for Termux, Kali Linux, and compatible Linux environments. It detects the runtime environment, creates a per-user channel identifier, polls for task proposals, and requires explicit local approval before executing a proposal. It uses Python 3 and `requests`.
+
+Install on Termux:
+
+```bash
+pkg update -y && pkg upgrade -y
+pkg install python git -y
+python -m pip install requests
+git clone https://github.com/Ramy-alsamee/R.alsamee.git
+cd R.alsamee
+python ramy.py
+```
+
+Install on Kali/Debian/Ubuntu:
+
+```bash
+sudo apt update
+sudo apt install -y python3 python3-pip python3-venv git
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install requests
+git clone https://github.com/Ramy-alsamee/R.alsamee.git
+cd R.alsamee
+python3 ramy.py
+```
+
+Review every incoming proposal locally. Do not send secrets through a public relay, do not run the program as root unless absolutely necessary, and use the tool only on systems you own or are explicitly authorized to administer.
+
+## References
+
+[1]: https://github.com/Ramy-alsamee/R.alsamee "R.alsamee repository"
+[2]: https://docs.python.org/3/library/venv.html "Python venv documentation"
+[3]: https://docs.ntfy.sh/ "ntfy documentation"
+[4]: https://termux.dev/en/ "Termux official website"
+[5]: https://www.kali.org/docs/ "Kali Linux documentation"
+### Sources:
+- [1] [R.alsamee repository](https://github.com/Ramy-alsamee/R.alsamee)
+- [2] [Python venv documentation](https://docs.python.org/3/library/venv.html)
+- [3] [ntfy documentation](https://docs.ntfy.sh/)
+- [4] [Termux official website](https://termux.dev/en/)
+- [5] [Kali Linux documentation](https://www.kali.org/docs/)
+
+> ملاحظة: استخدم هذا المشروع فقط في أجهزة تملكها أو لديك تصريح صريح لإدارتها.
