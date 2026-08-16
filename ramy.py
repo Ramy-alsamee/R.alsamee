@@ -89,8 +89,12 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print("\n\n[!] تم إيقاف الجسر. وداعاً!")
             break
+        except requests.exceptions.ConnectionError:
+            print("\n[!] خطأ في الاتصال: تعذر الوصول إلى خادم الجسر.")
+            print("[i] نصيحة: إذا كنت في شبكة مقيدة، جرب تفعيل VPN ثم أعد التشغيل.")
+            time.sleep(5)
+            continue
         except Exception as e:
-            # تجاهل أخطاء الشبكة المؤقتة
             time.sleep(2)
             continue
         
