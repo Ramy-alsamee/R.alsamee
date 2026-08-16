@@ -144,7 +144,13 @@ sudo apt install -y python3-venv
 
 هذا المشروع مرخّص بموجب MIT License. وهو مخصص للتعليم، وأتمتة المهام الشخصية، والاختبار المصرّح به فقط. يتحمل المستخدم مسؤولية الأوامر التي يوافق على تنفيذها والبيئة التي يشغّل فيها الأداة.
 
+## حقوق الملكية
+
+حقوق الطبع والنشر © 2026 **رامي السامعي (Ramy Al-Samee)**. لا تمثل أسماء FURY Developer أو أي اسم تجاري سابق مالك الحقوق لهذا المشروع. يُرجى الرجوع إلى ملف `LICENSE` لمعرفة شروط استخدام MIT.
+
 ## English summary
+
+Copyright © 2026 **رامي السامعي (Ramy Al-Samee)**. Please refer to `LICENSE` for the MIT License terms.
 
 `ramy.py` is an educational local task manager for Termux, Kali Linux, and compatible Linux environments. It detects the runtime environment, creates a per-user channel identifier, polls for task proposals, and requires explicit local approval before executing a proposal. It uses Python 3 and `requests`.
 
